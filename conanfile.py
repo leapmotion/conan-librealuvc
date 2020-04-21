@@ -33,9 +33,14 @@ class LibrealuvcConan(ConanFile):
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()''')
 
-    def build(self):
-        cmake = CMake(self)
+    def _configure_cmake(self):
+        cmake = CMake(self, set_cmake_flags=True)
         cmake.configure(source_folder="librealuvc")
+        cmake.definitions["BUILD_SHARED_LIBS"] = self.options.shared
+        return cmake
+
+    def build(self):
+        cmake = self._configure_cmake()
         cmake.build()
 
     def package(self):
