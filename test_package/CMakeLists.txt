@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.12)
 project(PackageTest CXX)
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
@@ -6,10 +6,6 @@ conan_basic_setup()
 
 add_executable(example example.cpp)
 target_link_libraries(example ${CONAN_LIBS})
-
-message("AAA ${CONAN_LIBS}")
-#set(CMAKE_LINK_DEPENDS_DEBUG_MODE 1)
-add_link_options(/VERBOSE:LIB /MAP)
 
 # CTest is a testing tool that can be used to test your project.
 # enable_testing()

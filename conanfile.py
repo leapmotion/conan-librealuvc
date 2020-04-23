@@ -13,7 +13,7 @@ class LibrealuvcConan(ConanFile):
                   "library."
     topics = ("<Put some tag here>", "<here>", "<and here>")
     settings = "os", "compiler", "build_type", "arch"
-    requires = "opencv/4.1.1@conan/stable", "libusb/1.0.23@bincrafters/stable"
+    requires = "opencv/4.1.1@conan/stable"
     options = {"shared": [True, False]}
     default_options = {"shared": True, 
                        "opencv:shared": True,
@@ -33,14 +33,12 @@ class LibrealuvcConan(ConanFile):
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()''')
 
-    def _configure_cmake(self):
-        cmake = CMake(self, set_cmake_flags=True)
-        cmake.configure(source_folder="librealuvc")
-        cmake.definitions["BUILD_SHARED_LIBS"] = self.options.shared
-        return cmake
-
     def build(self):
-        cmake = self._configure_cmake()
+        cmake = CMake(self)
+        cmake.definitions["BUILD_SHARED_LIBS"] = self.options.shared
+        if self.settings.os == "Windows" and self.options.shared:
+            cmake.definitions["CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS"] = True
+        cmake.configure(source_folder="librealuvc")
         cmake.build()
 
     def package(self):
