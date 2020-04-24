@@ -22,7 +22,6 @@ class LibrealuvcConan(ConanFile):
                        "opencv:protobuf": False}
     generators = "cmake", "cmake_find_package"
 
-
     def source(self):
         self.run("git clone https://github.com/DarrenBuller/librealuvc.git")
         # This small hack might be useful to guarantee proper /MT /MD linkage
@@ -34,12 +33,13 @@ include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()''')
 
     def build(self):
-        cmake = CMake(self)
-        cmake.definitions["BUILD_SHARED_LIBS"] = self.options.shared
+		build_type = self.settings.build_type
+        self._cmake = CMake(self, build_type=build_type)
+        self._cmake.definitions["BUILD_SHARED_LIBS"] = self.options.shared
         if self.settings.os == "Windows" and self.options.shared:
-            cmake.definitions["CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS"] = True
-        cmake.configure(source_folder="librealuvc")
-        cmake.build()
+            self._cmake.definitions["CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS"] = True
+        self._cmake.configure(source_folder="librealuvc")
+        self._cmake.build()
 
     def package(self):
         #self.copy("LICENSE", dst="licenses", src=self._source_subfolder)
