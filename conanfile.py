@@ -17,6 +17,7 @@ class LibrealuvcConan(ConanFile):
     options = {"shared": [True, False],
                "fPIC": [True, False]}
     default_options = {"shared": True,
+	                   "fPIC": True,
                        "opencv:shared": True,
                        "opencv:ffmpeg": False,
                        "opencv:tiff": False,
