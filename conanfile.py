@@ -1,3 +1,4 @@
+import os
 from conans import ConanFile, CMake, tools
 
 
@@ -11,15 +12,16 @@ class LibrealuvcConan(ConanFile):
                   "USB devices (e.g. motion sensors), with support for UVC Extension Units." \
                   "It is a modified version of the backend code from the IntelRealSense/librealsense" \
                   "library."
-    topics = ("<Put some tag here>", "<here>", "<and here>")
     settings = "os", "compiler", "build_type", "arch"
-    requires = "opencv/4.1.1@conan/stable"
-    options = {"shared": [True, False]}
-    default_options = {"shared": True, 
+    requires = "opencv/4.1.1@conan/stable"  # , "libusb/1.0.23@bincrafters/stable"
+    options = {"shared": [True, False],
+               "fPIC": [True, False]}
+    default_options = {"shared": True,
                        "opencv:shared": True,
                        "opencv:ffmpeg": False,
                        "opencv:tiff": False,
                        "opencv:protobuf": False}
+    exports = "LICENSE"
     generators = "cmake", "cmake_find_package"
 
     def source(self):
@@ -32,18 +34,25 @@ class LibrealuvcConan(ConanFile):
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()''')
 
+    def config_options(self):
+        if self.settings.os == "Windows":
+            del self.options.fPIC
+
     def build(self):
-		build_type = self.settings.build_type
-        self._cmake = CMake(self, build_type=build_type)
-        self._cmake.definitions["BUILD_SHARED_LIBS"] = self.options.shared
-        if self.settings.os == "Windows" and self.options.shared:
-            self._cmake.definitions["CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS"] = True
-        self._cmake.configure(source_folder="librealuvc")
-        self._cmake.build()
+
+
+       build_type = self.settings.build_type
+       self._cmake = CMake(self, build_type=build_type)
+       self._cmake.definitions["BUILD_SHARED_LIBS"] = self.options.shared
+       if self.settings.os == "Windows" and self.options.shared:
+           self._cmake.definitions["CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS"] = True
+       self._cmake.configure(source_folder="librealuvc")
+       self._cmake.build()
 
     def package(self):
         #self.copy("LICENSE", dst="licenses", src=self._source_subfolder)
-        self.copy("*.h", dst="include/librealuvc", src="librealuvc/include/librealuvc")
+        self.copy("*.h", dst="include/librealuvc",
+                  src="librealuvc/include/librealuvc")
         self.copy("*.lib", dst="lib", keep_path=False)
         self.copy("*.dll", dst="bin", keep_path=False)
         self.copy("*.so", dst="lib", keep_path=False)
@@ -52,4 +61,3 @@ conan_basic_setup()''')
 
     def package_info(self):
         self.cpp_info.libs = ["librealuvc"]
-
