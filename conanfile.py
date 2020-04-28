@@ -4,10 +4,10 @@ from conans import ConanFile, CMake, tools
 
 class LibrealuvcConan(ConanFile):
     name = "librealuvc"
-    version = "1.0.0"
+    version = "1.0.1"
     license = "http://www.apache.org/LICENSE.txt"
     author = "darren.buller@ultraleap.com"
-    url = "https://github.com/DarrenBuller/librealuvc.git"
+    url = "https://github.com/DarrenBuller/conan-librealuvc"
     description = "This library provides a portable backend to UVC-compliant cameras and other" \
                   "USB devices (e.g. motion sensors), with support for UVC Extension Units." \
                   "It is a modified version of the backend code from the IntelRealSense/librealsense" \
@@ -26,7 +26,7 @@ class LibrealuvcConan(ConanFile):
     generators = "cmake", "cmake_find_package"
 
     def source(self):
-        self.run("git clone https://github.com/DarrenBuller/librealuvc.git")
+        self.run("git clone https://github.com/dbuller/librealuvc.git")
         # This small hack might be useful to guarantee proper /MT /MD linkage
         # in MSVC if the packaged project doesn't have variables to set it
         # properly
@@ -40,8 +40,6 @@ conan_basic_setup()''')
             del self.options.fPIC
 
     def build(self):
-
-
        build_type = self.settings.build_type
        self._cmake = CMake(self, build_type=build_type)
        self._cmake.definitions["BUILD_SHARED_LIBS"] = self.options.shared
