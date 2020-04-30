@@ -1,10 +1,15 @@
-import os
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""Conan recipe package for librealuvc
+"""
 from conans import ConanFile, CMake, tools
 
 
 class LibrealuvcConan(ConanFile):
     name = "librealuvc"
-    version = "1.0.1"
+
+    version = "0.0.2"
     license = "http://www.apache.org/LICENSE.txt"
     author = "darren.buller@ultraleap.com"
     url = "https://github.com/DarrenBuller/conan-librealuvc"
@@ -17,7 +22,7 @@ class LibrealuvcConan(ConanFile):
     options = {"shared": [True, False],
                "fPIC": [True, False]}
     default_options = {"shared": True,
-	                   "fPIC": True,
+                       "fPIC": True,
                        "opencv:shared": True,
                        "opencv:ffmpeg": False,
                        "opencv:tiff": False,
@@ -26,7 +31,7 @@ class LibrealuvcConan(ConanFile):
     generators = "cmake", "cmake_find_package"
 
     def source(self):
-        self.run("git clone https://github.com/dbuller/librealuvc.git")
+        self.run("git clone --depth 1 https://github.com/leapmotion/librealuvc.git")
         # This small hack might be useful to guarantee proper /MT /MD linkage
         # in MSVC if the packaged project doesn't have variables to set it
         # properly
@@ -36,20 +41,35 @@ include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()''')
 
     def config_options(self):
+        """Remove fPIC option on Windows platform
+        """
         if self.settings.os == "Windows":
             del self.options.fPIC
 
+
+    def configure_cmake(self):
+        """Create CMake instance and execute configure step
+        """
+        build_type = "None"
+        if(self.settings.os == "Windows" and self.options.shared):
+            """Force release mode because debug dll fails unresolved linker errors
+            """
+            build_type = "Release"
+
+        cmake = CMake(self, build_type=build_type)
+        cmake.definitions["BUILD_SHARED_LIBS"] = self.options.shared
+        cmake.definitions["BUILD_STATIC_LIBS"] = not self.options.shared
+        cmake.configure(source_folder="librealuvc")
+        return cmake
+
     def build(self):
-       build_type = self.settings.build_type
-       self._cmake = CMake(self, build_type=build_type)
-       self._cmake.definitions["BUILD_SHARED_LIBS"] = self.options.shared
-       if self.settings.os == "Windows" and self.options.shared:
-           self._cmake.definitions["CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS"] = True
-       self._cmake.configure(source_folder="librealuvc")
-       self._cmake.build()
+        """Configure, build and install FlatBuffers using CMake.
+        """
+        cmake = self.configure_cmake()
+        cmake.build()
 
     def package(self):
-        #self.copy("LICENSE", dst="licenses", src=self._source_subfolder)
+        cmake = self.configure_cmake()
         self.copy("*.h", dst="include/librealuvc",
                   src="librealuvc/include/librealuvc")
         self.copy("*.lib", dst="lib", keep_path=False)
