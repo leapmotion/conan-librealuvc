@@ -8,7 +8,7 @@ from conans import ConanFile, CMake, tools
 class LibrealuvcConan(ConanFile):
     name = "librealuvc"
 
-    version = "0.0.3"
+    version = "0.0.4"
     license = "http://www.apache.org/LICENSE.txt"
     author = "darren.buller@ultraleap.com"
     url = "https://github.com/DarrenBuller/conan-librealuvc"
@@ -30,7 +30,7 @@ class LibrealuvcConan(ConanFile):
     generators = "cmake"
 
     def source(self):
-        self.run("git clone --branch develop-conan-integration-test --depth 1 git@github.com:DarrenBuller/librealuvc.git")
+        self.run("git clone --branch develop-conan-integration-test --depth 1 https://github.com/DarrenBuller/librealuvc.git")
         # This small hack might be useful to guarantee proper /MT /MD linkage
         # in MSVC if the packaged project doesn't have variables to set it
         # properly
