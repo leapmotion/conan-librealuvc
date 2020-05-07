@@ -27,16 +27,16 @@ class LibrealuvcConan(ConanFile):
                        "opencv:tiff": False,
                        "opencv:protobuf": False}
     exports = "LICENSE"
-    generators = "cmake", "cmake_find_package"
+    generators = "cmake"
 
     def source(self):
-        self.run("git clone --depth 1 https://github.com/leapmotion/librealuvc.git")
+        self.run("git clone --branch develop-conan-integration-test --depth 1 git@github.com:DarrenBuller/librealuvc.git")
         # This small hack might be useful to guarantee proper /MT /MD linkage
         # in MSVC if the packaged project doesn't have variables to set it
         # properly
         tools.replace_in_file("librealuvc/CMakeLists.txt", "project(librealuvc LANGUAGES CXX C)",
                               '''project(librealuvc LANGUAGES CXX C)
-set(BUILD_WITH_CONAN)                              
+set(BUILD_WITH_CONAN ON)                              
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(targets)''')
 
@@ -75,6 +75,7 @@ conan_basic_setup(targets)''')
         self.copy("*.lib", dst="lib", keep_path=False)
         self.copy("*.dll", dst="bin", keep_path=False)
         self.copy("*.so", dst="lib", keep_path=False)
+        self.copy("*.so.*", dst="lib", keep_path=False)
         self.copy("*.dylib", dst="lib", keep_path=False)
         self.copy("*.a", dst="lib", keep_path=False)
 
