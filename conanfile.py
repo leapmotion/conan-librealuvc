@@ -5,11 +5,10 @@
 """
 from conans import ConanFile, CMake, tools
 
-
 class LibrealuvcConan(ConanFile):
     name = "librealuvc"
 
-    version = "0.0.2"
+    version = "0.0.3"
     license = "http://www.apache.org/LICENSE.txt"
     author = "darren.buller@ultraleap.com"
     url = "https://github.com/DarrenBuller/conan-librealuvc"
@@ -37,8 +36,9 @@ class LibrealuvcConan(ConanFile):
         # properly
         tools.replace_in_file("librealuvc/CMakeLists.txt", "project(librealuvc LANGUAGES CXX C)",
                               '''project(librealuvc LANGUAGES CXX C)
+set(BUILD_WITH_CONAN)                              
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()''')
+conan_basic_setup(targets)''')
 
     def config_options(self):
         """Remove fPIC option on Windows platform
