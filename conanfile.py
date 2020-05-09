@@ -37,8 +37,12 @@ class LibrealuvcConan(ConanFile):
         tools.replace_in_file("librealuvc/CMakeLists.txt", "project(librealuvc LANGUAGES CXX C)",
                               '''project(librealuvc LANGUAGES CXX C)
 set(BUILD_WITH_CONAN ON)                              
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup(targets)''')
+if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo_multi.cmake)
+  include(${CMAKE_BINARY_DIR}/conanbuildinfo_multi.cmake)
+else()
+  include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+endif()
+conan_basic_setup(TARGETS)''')
 
     def config_options(self):
         """Remove fPIC option on Windows platform
