@@ -41,7 +41,7 @@ if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo_multi.cmake)
   include(${CMAKE_BINARY_DIR}/conanbuildinfo_multi.cmake)
 else()
   include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-#endif()
+endif()
 set(CMAKE_VERBOSE_MAKEFILE ON)
 conan_basic_setup(TARGETS)''')
 
