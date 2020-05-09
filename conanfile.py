@@ -27,7 +27,7 @@ class LibrealuvcConan(ConanFile):
                        "opencv:tiff": False,
                        "opencv:protobuf": False}
     exports = "LICENSE"
-    generators = "cmake_paths"
+    generators = "cmake"
 
     def source(self):
         self.run("git clone --branch develop-conan-integration-test --depth 1 https://github.com/DarrenBuller/librealuvc.git")
