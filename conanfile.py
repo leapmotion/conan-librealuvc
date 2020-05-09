@@ -37,12 +37,12 @@ class LibrealuvcConan(ConanFile):
         tools.replace_in_file("librealuvc/CMakeLists.txt", "project(librealuvc LANGUAGES CXX C)",
                               '''project(librealuvc LANGUAGES CXX C)
 set(BUILD_WITH_CONAN ON)                              
-#if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo_multi.cmake)
-#  include(${CMAKE_BINARY_DIR}/conanbuildinfo_multi.cmake)
-#else()
-#  include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-#endif()
-#set(CMAKE_VERBOSE_MAKEFILE ON)
+if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo_multi.cmake)
+  include(${CMAKE_BINARY_DIR}/conanbuildinfo_multi.cmake)
+else()
+  include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+endif()
+set(CMAKE_VERBOSE_MAKEFILE ON)
 conan_basic_setup()
 #conan_basic_setup(TARGETS)''')
 
