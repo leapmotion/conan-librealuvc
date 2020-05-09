@@ -44,7 +44,8 @@ class LibrealuvcConan(ConanFile):
 #endif()
 include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
 message(STATUS "CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}")
-set(OpenCV_DIR ${CONAN_OPENCV_ROOT})
+set(OpenCV_DIR "${CONAN_OPENCV_ROOT}/cmake")
+message(STATUS "OpenCV_DIR ${OpenCV_DIR}")
 #conan_basic_setup(TARGETS)''')
 
     def config_options(self):
