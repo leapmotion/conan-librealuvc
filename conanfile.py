@@ -43,6 +43,7 @@ class LibrealuvcConan(ConanFile):
 #  include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 #endif()
 include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
+message(STATUS "CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}")
 #conan_basic_setup(TARGETS)''')
 
     def config_options(self):
